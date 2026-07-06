@@ -100,6 +100,11 @@ export default function CompanyForm({ onAnalyze }: CompanyFormProps) {
     <Panel
       title="Analyze a company"
       description="Enter what you know. The agent will generate a full operational audit using demo data tailored to the selected industry."
+      action={
+        <span className="rounded-full border border-edge bg-surface-raised/50 px-2.5 py-1 text-[11px] font-medium text-slate-400">
+          Demo mode · Local deterministic analysis · No external data used
+        </span>
+      }
     >
       <section aria-labelledby="demo-presets-title" className="mt-5">
         <div className="flex flex-wrap items-end justify-between gap-2">
