@@ -50,7 +50,7 @@ export default function ReportView({ result }: { result: AnalysisResult }) {
         <OutreachSection outreach={result.outreach} />
       </div>
 
-      <div className="flex flex-col gap-5">
+      <div className="flex min-w-0 flex-col gap-5">
         <ProposalPreview companyName={result.companyName} />
         <AiInsightPanel insight={report.insight} />
       </div>

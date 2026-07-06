@@ -180,11 +180,11 @@ function WebsiteAuditView({ result }: { result: AnalysisResult }) {
                       />
                     </div>
                     <span
-                      className={`w-12 flex-none rounded px-1.5 py-0.5 text-center text-[11px] font-semibold ${style.pill}`}
+                      className={`w-11 flex-none rounded px-1.5 py-0.5 text-center text-[11px] font-semibold ${style.pill}`}
                     >
                       {step.pct}%
                     </span>
-                    <span className="w-40 flex-none text-xs text-slate-300">
+                    <span className="w-20 flex-none text-xs text-slate-300 sm:w-40">
                       {step.label}
                     </span>
                   </div>
@@ -231,7 +231,7 @@ function WebsiteAuditView({ result }: { result: AnalysisResult }) {
       </div>
 
       {/* Right rail */}
-      <div className="flex flex-col gap-5">
+      <div className="flex min-w-0 flex-col gap-5">
         <section aria-label="Key findings">
           <h2 className="text-base font-semibold text-slate-100">Key Findings</h2>
           <div className="mt-3 flex flex-col gap-3">

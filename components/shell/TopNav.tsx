@@ -34,7 +34,7 @@ function TopNav({ onNewAnalysis }: TopNavProps) {
               <span
                 key={tab.label}
                 title="Roadmap feature — coming in a later phase"
-                className="cursor-not-allowed border-b-2 border-transparent px-3 py-3.5 text-sm font-medium text-slate-500"
+                className="hidden cursor-not-allowed border-b-2 border-transparent px-3 py-3.5 text-sm font-medium text-slate-500 sm:block"
               >
                 {tab.label}
               </span>
@@ -49,7 +49,11 @@ function TopNav({ onNewAnalysis }: TopNavProps) {
           >
             AG
           </span>
-          <button type="button" onClick={onNewAnalysis} className={PRIMARY_BUTTON}>
+          <button
+            type="button"
+            onClick={onNewAnalysis}
+            className={`${PRIMARY_BUTTON} flex-none whitespace-nowrap`}
+          >
             + New Analysis
           </button>
         </div>

@@ -169,7 +169,7 @@ function RoiForecastView({ result }: { result: AnalysisResult }) {
             description="Cumulative net return vs. the current monthly revenue leakage."
           />
 
-          <section className="flex flex-col">
+          <section className="flex min-w-0 flex-col">
             <h2 className="text-base font-semibold text-slate-100">
               Automation Value Breakdown
             </h2>
@@ -233,7 +233,7 @@ function RoiForecastView({ result }: { result: AnalysisResult }) {
           </section>
         </div>
 
-        <div className="flex flex-col gap-5">
+        <div className="flex min-w-0 flex-col gap-5">
           <Panel title="Scenario Selector">
             <div className="mt-4 flex flex-col gap-2.5">
               {scenarios.map((s) => (

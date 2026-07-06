@@ -9,8 +9,10 @@ interface CompanyFormProps {
   onAnalyze: (input: CompanyInput) => void;
 }
 
+// text-base (16px) on mobile avoids iOS Safari's auto-zoom-on-focus for any
+// input under 16px; sm: reverts to the original 14px on larger screens.
 const FIELD_CLASS =
-  "rounded-lg border border-edge-strong bg-slate-950/60 px-3 py-2 text-sm text-slate-100 placeholder:text-slate-500 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20";
+  "rounded-lg border border-edge-strong bg-slate-950/60 px-3 py-2 text-base sm:text-sm text-slate-100 placeholder:text-slate-500 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20";
 
 const LABEL_CLASS = "text-sm font-medium text-slate-300";
 

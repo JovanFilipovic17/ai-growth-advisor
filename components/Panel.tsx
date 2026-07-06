@@ -18,7 +18,7 @@ export default function Panel({
   return (
     <section
       id={id}
-      className="scroll-mt-24 rounded-xl border border-edge bg-surface-panel p-5 shadow-panel"
+      className="min-w-0 scroll-mt-24 rounded-xl border border-edge bg-surface-panel p-5 shadow-panel"
     >
       {(title || action) && (
         <div className="flex flex-wrap items-start justify-between gap-3">

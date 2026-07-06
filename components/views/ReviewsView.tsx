@@ -175,7 +175,7 @@ function ReviewsView({ result }: { result: AnalysisResult }) {
           </Panel>
         </div>
 
-        <section>
+        <section className="min-w-0">
           <h2 className="text-base font-semibold text-slate-100">
             Review Response Analysis
           </h2>
@@ -207,7 +207,7 @@ function ReviewsView({ result }: { result: AnalysisResult }) {
           </div>
         </section>
 
-        <section>
+        <section className="min-w-0">
           <h2 className="text-base font-semibold text-slate-100">
             AI Recommendations
           </h2>
@@ -246,7 +246,7 @@ function ReviewsView({ result }: { result: AnalysisResult }) {
       </div>
 
       {/* Right rail: sample reviews */}
-      <div className="flex flex-col gap-5">
+      <div className="flex min-w-0 flex-col gap-5">
         <div className="flex flex-col gap-3">
           {intel.samples.map((sample) => (
             <div

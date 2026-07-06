@@ -23,7 +23,7 @@ export default function OpportunitiesTable({
   hourlyValue,
 }: OpportunitiesTableProps) {
   return (
-    <section id="opportunities" className="flex scroll-mt-24 flex-col">
+    <section id="opportunities" className="flex min-w-0 scroll-mt-24 flex-col">
       <h2 className="text-base font-semibold text-slate-100">
         AI Automation Opportunities
       </h2>

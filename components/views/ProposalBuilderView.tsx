@@ -79,8 +79,9 @@ const ACTION_BUTTONS = [
   "Export to CRM",
 ];
 
+// text-base (16px) on mobile avoids iOS Safari's auto-zoom-on-focus.
 const SELECT_CLASS =
-  "w-full rounded-lg border border-edge-strong bg-slate-950/60 px-3 py-2 text-sm text-slate-100 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20";
+  "w-full rounded-lg border border-edge-strong bg-slate-950/60 px-3 py-2 text-base sm:text-sm text-slate-100 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20";
 
 function EditButton() {
   return (
@@ -245,7 +246,7 @@ export default function ProposalBuilderView({
           </Panel>
         </div>
 
-        <div className="flex flex-col gap-5">
+        <div className="flex min-w-0 flex-col gap-5">
           {/* Full-page proposal preview (visual mock) */}
           <section
             aria-label="Proposal preview"

@@ -92,7 +92,7 @@ export default function AppShell() {
                   role="tab"
                   aria-selected={activeView === view}
                   onClick={() => handleNavigate(view)}
-                  className={`flex-none rounded-full border px-3.5 py-1.5 text-xs font-semibold transition ${
+                  className={`flex-none whitespace-nowrap rounded-full border px-3.5 py-1.5 text-xs font-semibold transition ${
                     activeView === view
                       ? "border-blue-500/60 bg-blue-500/15 text-blue-300"
                       : "border-edge bg-surface-raised/50 text-slate-400"

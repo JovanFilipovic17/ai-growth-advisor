@@ -13,7 +13,7 @@ export default function BottlenecksSection({
   bottlenecks: Bottleneck[];
 }) {
   return (
-    <section id="bottlenecks" className="scroll-mt-24">
+    <section id="bottlenecks" className="min-w-0 scroll-mt-24">
       <h2 className="text-base font-semibold text-slate-100">
         Business Bottlenecks
       </h2>
