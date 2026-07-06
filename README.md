@@ -137,6 +137,47 @@ Export and CRM buttons are currently visual placeholders for future roadmap feat
 
 ---
 
+## Notes-Based Intelligence
+
+AI Growth Advisor now includes a deterministic signal engine that makes the analysis more personalized based on the optional business notes field.
+
+When the user adds notes about a company, the app detects business signals such as:
+
+- missed calls
+- slow lead follow-up
+- no CRM or messy customer data
+- unanswered reviews
+- bad reviews or reputation risk
+- appointment no-shows
+- booking friction
+- manual reporting
+- churn or renewal risk
+- weak website conversion
+- inactive social media
+- high admin workload
+
+These detected signals influence the generated business report across multiple views:
+
+- bottleneck severity
+- AI automation opportunity ranking
+- AI Opportunity Score
+- estimated monthly savings
+- ROI forecast
+- Website Audit findings
+- Review Intelligence insights
+- Proposal Builder sections
+- AI Insight / Recommended Next Step
+- outreach copy
+
+The signal engine is fully local and deterministic. It does not use external APIs, scraping, databases, or LLM calls.
+
+### Example Notes
+
+```text
+We keep missing calls during busy hours and leads wait days for a reply.
+
+---
+
 ## Tech Stack
 
 - Next.js
