@@ -4,10 +4,16 @@ import { useState } from "react";
 import { AnalysisResult, DetectedSignal } from "@/lib/types";
 import { formatCurrency } from "@/lib/format";
 import { signalPhrase } from "@/lib/signals";
+import {
+  generateProposalPdf,
+  ProposalPdfSettings,
+  DEFAULT_PROPOSAL_PDF_SETTINGS,
+} from "@/lib/proposalPdf";
 import Panel from "../Panel";
 import PlaceholderButton from "../PlaceholderButton";
 import PreviewSkeleton from "../PreviewSkeleton";
 import AiInsightPanel from "../report/AiInsightPanel";
+import { PRIMARY_BUTTON, GHOST_BUTTON } from "../buttonStyles";
 
 type SectionStatus = "Complete" | "Draft" | "Needs Review";
 
@@ -71,13 +77,7 @@ function buildSections(signals: DetectedSignal[]): ProposalSection[] {
   ];
 }
 
-const ACTION_BUTTONS = [
-  "Generate Proposal PDF",
-  "Regenerate with AI",
-  "Download PDF",
-  "Send by Email",
-  "Export to CRM",
-];
+const PLACEHOLDER_ACTION_BUTTONS = ["Regenerate with AI", "Send by Email", "Export to CRM"];
 
 // text-base (16px) on mobile avoids iOS Safari's auto-zoom-on-focus.
 const SELECT_CLASS =
@@ -106,17 +106,18 @@ function EditButton() {
   );
 }
 
-// Cosmetic on/off switch — local state only, affects nothing else.
+// Gates which sections generateProposalPdf() includes.
 function Toggle({
   label,
-  defaultOn,
+  checked,
+  onChange,
   optional,
 }: {
   label: string;
-  defaultOn: boolean;
+  checked: boolean;
+  onChange: (next: boolean) => void;
   optional?: boolean;
 }) {
-  const [on, setOn] = useState(defaultOn);
   return (
     <div className="flex items-center justify-between gap-3">
       <span className="flex items-center gap-2 text-sm text-slate-300">
@@ -128,17 +129,17 @@ function Toggle({
       <button
         type="button"
         role="switch"
-        aria-checked={on}
+        aria-checked={checked}
         aria-label={label}
-        onClick={() => setOn(!on)}
+        onClick={() => onChange(!checked)}
         className={`relative h-5 w-9 flex-none rounded-full transition ${
-          on ? "bg-blue-500" : "bg-slate-700"
+          checked ? "bg-blue-500" : "bg-slate-700"
         }`}
       >
         <span
           aria-hidden="true"
           className={`absolute top-0.5 h-4 w-4 rounded-full bg-white transition-all ${
-            on ? "left-[18px]" : "left-0.5"
+            checked ? "left-[18px]" : "left-0.5"
           }`}
         />
       </button>
@@ -178,6 +179,25 @@ export default function ProposalBuilderView({
 }) {
   const { companyName, report } = result;
   const sections = buildSections(result.signals);
+  const [settings, setSettings] = useState<ProposalPdfSettings>(
+    DEFAULT_PROPOSAL_PDF_SETTINGS,
+  );
+  const [isGenerating, setIsGenerating] = useState(false);
+
+  function updateSetting<K extends keyof ProposalPdfSettings>(key: K, value: boolean) {
+    setSettings((prev) => ({ ...prev, [key]: value }));
+  }
+
+  async function handleGeneratePdf() {
+    setIsGenerating(true);
+    try {
+      await generateProposalPdf(result, settings);
+    } catch (error) {
+      console.error("Failed to generate proposal PDF", error);
+    } finally {
+      setIsGenerating(false);
+    }
+  }
 
   return (
     <div className="mx-auto flex max-w-[1600px] flex-col gap-5">
@@ -192,7 +212,23 @@ export default function ProposalBuilderView({
           </p>
         </div>
         <div className="flex flex-wrap gap-2">
-          {ACTION_BUTTONS.map((label) => (
+          <button
+            type="button"
+            onClick={handleGeneratePdf}
+            disabled={isGenerating}
+            className={`${PRIMARY_BUTTON} text-xs disabled:cursor-wait disabled:opacity-70`}
+          >
+            {isGenerating ? "Generating…" : "Generate Proposal PDF"}
+          </button>
+          <button
+            type="button"
+            onClick={handleGeneratePdf}
+            disabled={isGenerating}
+            className={`${GHOST_BUTTON} text-xs disabled:cursor-wait disabled:opacity-70`}
+          >
+            {isGenerating ? "Generating…" : "Download PDF"}
+          </button>
+          {PLACEHOLDER_ACTION_BUTTONS.map((label) => (
             <PlaceholderButton key={label} label={label} className="text-xs" />
           ))}
         </div>
@@ -226,6 +262,9 @@ export default function ProposalBuilderView({
 
           <Panel title="Proposal Settings">
             <div className="mt-4 grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-2 lg:grid-cols-3">
+              {/* Tone/length/currency are decorative for now — the PDF export
+                  is a data export, not a rewrite engine; wiring these would
+                  mean generating varied prose per combination. */}
               <LabeledSelect
                 id="proposal-tone"
                 label="Tone"
@@ -238,9 +277,22 @@ export default function ProposalBuilderView({
               />
               <LabeledSelect id="proposal-currency" label="Currency" options={["EUR"]} />
               <div className="flex flex-col justify-end gap-3 sm:col-span-2 lg:col-span-3">
-                <Toggle label="Include ROI chart" defaultOn />
-                <Toggle label="Include implementation timeline" defaultOn />
-                <Toggle label="Include pricing package" defaultOn={false} optional />
+                <Toggle
+                  label="Include ROI chart"
+                  checked={settings.includeRoiChart}
+                  onChange={(next) => updateSetting("includeRoiChart", next)}
+                />
+                <Toggle
+                  label="Include implementation timeline"
+                  checked={settings.includeImplementationTimeline}
+                  onChange={(next) => updateSetting("includeImplementationTimeline", next)}
+                />
+                <Toggle
+                  label="Include pricing package"
+                  checked={settings.includePricingPackage}
+                  onChange={(next) => updateSetting("includePricingPackage", next)}
+                  optional
+                />
               </div>
             </div>
           </Panel>

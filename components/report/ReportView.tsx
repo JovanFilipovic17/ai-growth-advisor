@@ -16,11 +16,7 @@ export default function ReportView({ result }: { result: AnalysisResult }) {
   return (
     <div className="mx-auto grid max-w-[1600px] grid-cols-1 gap-5 xl:grid-cols-[minmax(0,1fr)_320px]">
       <div className="flex min-w-0 flex-col gap-5">
-        <ReportHeader
-          companyName={result.companyName}
-          websiteUrl={result.websiteUrl}
-          industryLabel={result.industryLabel}
-        />
+        <ReportHeader result={result} />
 
         <KpiCards report={report} roi={roi} />
 
