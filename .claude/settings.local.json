@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm install *)",
+      "Bash(npm view *)",
+      "Bash(npm run *)",
+      "Bash(npx tsc *)",
+      "Bash(grep -rn \"C:\\\\\\\\\\\\\\\\Users\\\\|C:/Users\" app/ components/ lib/ *.json *.mjs *.js *.ts)",
+      "Bash(grep -rn \"\\\\\\\\$\" components/ lib/ --include=*.tsx --include=*.ts)",
+      "Bash(grep -v \"\\\\${\")",
+      "Bash(grep -rn \"process\\\\.env\\\\|fetch\\(\\\\|http://\\\\|https://\" app/ components/ lib/)"
+    ]
+  }
+}
