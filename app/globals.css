@@ -13,6 +13,7 @@ html {
 }
 
 body {
+  overflow-x: hidden;
   background-color: #050b14;
   background-image:
     radial-gradient(
@@ -26,5 +27,10 @@ body {
       transparent 60%
     ),
     linear-gradient(158deg, #050b14 0%, #08111f 48%, #0b1220 100%);
-  background-attachment: fixed;
+}
+
+@media (min-width: 1024px) {
+  body {
+    background-attachment: fixed;
+  }
 }

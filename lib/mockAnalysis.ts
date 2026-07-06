@@ -1,8 +1,10 @@
 import { INDUSTRY_PROFILES } from "./industryData";
 import { buildReport } from "./report";
+import { applySignals, detectSignals, signalPhrase } from "./signals";
 import {
   AnalysisResult,
   CompanyInput,
+  DetectedSignal,
   INDUSTRY_OPTIONS,
   Outreach,
   RoiEstimate,
@@ -18,27 +20,50 @@ function cleanWebsite(url: string): string {
   return trimmed.replace(/^https?:\/\//, "").replace(/\/$/, "");
 }
 
-function buildRoi(base: Omit<RoiEstimate, "estimatedMonthlyValue">): RoiEstimate {
-  const estimatedMonthlyValue = Math.round(
-    base.monthlyHoursSaved * base.hourlyValue
-  );
-  return { ...base, estimatedMonthlyValue };
+function buildRoi(
+  base: Omit<RoiEstimate, "estimatedMonthlyValue">,
+  signals: DetectedSignal[]
+): RoiEstimate {
+  // Each confirmed signal reveals extra recoverable hours the benchmark
+  // profile alone can't see (capped so the estimate stays conservative).
+  const signalHours = Math.min(8, signals.length * 2);
+  const monthlyHoursSaved = base.monthlyHoursSaved + signalHours;
+  return {
+    ...base,
+    monthlyHoursSaved,
+    estimatedMonthlyValue: Math.round(monthlyHoursSaved * base.hourlyValue),
+  };
+}
+
+function buildSummary(
+  baseSummary: string,
+  signals: DetectedSignal[],
+  leadOpportunity: string
+): string {
+  if (signals.length === 0) return baseSummary;
+  return `${baseSummary} The owner's own notes independently flag ${signalPhrase(
+    signals,
+    3
+  )} — first-hand confirmation that ${leadOpportunity.toLowerCase()} should lead the roadmap.`;
 }
 
 function buildOutreach(
   companyName: string,
   website: string,
   industryLabel: string,
-  topProblemTitles: string[],
+  problemLine: string,
   topOpportunityTitles: string[],
+  signals: DetectedSignal[],
   notes: string
 ): Outreach {
   const siteRef = website ? ` (${website})` : "";
-  const problemLine = topProblemTitles.slice(0, 2).join(" and ").toLowerCase();
   const oppLine = topOpportunityTitles.slice(0, 2).join(" and ");
-  const notesLine = notes.trim()
-    ? ` I also noted: "${notes.trim()}" — happy to fold that into the plan.`
-    : "";
+  const notesLine =
+    signals.length > 0
+      ? ` You mentioned ${signalPhrase(signals, 1)} yourself — that's a pattern I see constantly in ${industryLabel.toLowerCase()} businesses, and it's usually fixable in weeks, not months.`
+      : notes.trim()
+        ? ` I also noted: "${notes.trim()}" — happy to fold that into the plan.`
+        : "";
 
   const coldEmail = `Subject: A few automation opportunities I spotted for ${companyName}
 
@@ -69,30 +94,46 @@ export function generateAnalysis(input: CompanyInput): AnalysisResult {
   const industryLabel =
     INDUSTRY_OPTIONS.find((o) => o.value === input.industry)?.label ??
     "Business";
-
-  const roi = buildRoi(profile.roi);
-  const report = buildReport(profile.problems, profile.opportunities, roi);
-
-  const problems = [...profile.problems];
   const notes = input.notes.trim();
-  if (notes) {
-    problems.push({ title: "Owner-provided context", detail: notes });
+
+  // 1. Extract weighted signals from the owner's notes.
+  const signals = detectSignals(notes, input.industry);
+
+  // 2. Re-rank problems/opportunities around what the owner confirmed.
+  const { problems, opportunities } = applySignals(
+    profile,
+    input.industry,
+    signals
+  );
+
+  // 3. Signals uplift the recoverable-hours estimate, which flows into
+  //    savings, forecast, and break-even.
+  const roi = buildRoi(profile.roi, signals);
+  const report = buildReport(problems, opportunities, roi, signals);
+
+  const displayProblems = [...problems];
+  if (notes && signals.length === 0) {
+    displayProblems.push({ title: "Owner-provided context", detail: notes });
   }
 
-  const opportunities = [...profile.opportunities];
+  // Opportunities are already ranked (signal boost first, then priority).
+  const topOpportunityTitles = opportunities.slice(0, 2).map((o) => o.title);
 
-  const priorityOrder = { High: 0, Medium: 1, Low: 2 } as const;
-  const topOpportunityTitles = [...opportunities]
-    .sort((a, b) => priorityOrder[a.priority] - priorityOrder[b.priority])
-    .slice(0, 2)
-    .map((o) => o.title);
+  const problemLine =
+    signals.length > 0
+      ? signalPhrase(signals)
+      : problems
+          .slice(0, 2)
+          .map((p) => p.title.toLowerCase())
+          .join(" and ");
 
   const outreach = buildOutreach(
     companyName,
     website,
     industryLabel,
-    profile.problems.map((p) => p.title),
+    problemLine,
     topOpportunityTitles,
+    signals,
     notes
   );
 
@@ -101,9 +142,14 @@ export function generateAnalysis(input: CompanyInput): AnalysisResult {
     websiteUrl: website,
     industry: input.industry,
     industryLabel,
-    businessSummary: profile.summary(companyName),
-    problems,
+    businessSummary: buildSummary(
+      profile.summary(companyName),
+      signals,
+      topOpportunityTitles[0]
+    ),
+    problems: displayProblems,
     opportunities,
+    signals,
     roi,
     report,
     outreach,

@@ -1,3 +1,4 @@
+import { memo, useMemo } from "react";
 import { AnalysisResult, ComplexityLevel, Priority } from "@/lib/types";
 import {
   buildReviewIntelligence,
@@ -33,10 +34,12 @@ const SAMPLE_HEADER: Record<ReviewSample["kind"], string> = {
   Neutral: "text-amber-400",
 };
 
-function Stars({ filled }: { filled: number }) {
+const STAR_INDEXES = [0, 1, 2, 3, 4];
+
+const Stars = memo(function Stars({ filled }: { filled: number }) {
   return (
     <span aria-label={`${filled} out of 5 stars`} className="text-sm tracking-tight">
-      {Array.from({ length: 5 }, (_, i) => (
+      {STAR_INDEXES.map((i) => (
         <span
           key={i}
           aria-hidden="true"
@@ -47,28 +50,54 @@ function Stars({ filled }: { filled: number }) {
       ))}
     </span>
   );
-}
+});
 
-export default function ReviewsView({ result }: { result: AnalysisResult }) {
-  const intel = buildReviewIntelligence(result);
+function ReviewsView({ result }: { result: AnalysisResult }) {
+  const intel = useMemo(() => buildReviewIntelligence(result), [result]);
   const { sentiment } = intel;
 
-  const kpis = [
-    { label: "Google Rating", value: intel.rating.toFixed(1), tone: "text-blue-300" },
-    { label: "Total Reviews", value: String(intel.totalReviews), tone: "text-slate-100" },
-    { label: "Sentiment Score", value: `${intel.sentimentScore}/100`, tone: "text-slate-100" },
-    { label: "Response Rate", value: `${intel.responseRate}%`, tone: "text-slate-100" },
-    {
-      label: "Unanswered Negative Reviews",
-      value: String(intel.unansweredNegative),
-      tone: "text-rose-400",
-    },
-    {
-      label: "Estimated Reputation Risk",
-      value: intel.reputationRisk,
-      tone: LEVEL_TEXT[intel.reputationRisk],
-    },
-  ];
+  const kpis = useMemo(
+    () => [
+      {
+        label: "Google Rating",
+        value: intel.rating.toFixed(1),
+        tone: "text-blue-300",
+      },
+      {
+        label: "Total Reviews",
+        value: String(intel.totalReviews),
+        tone: "text-slate-100",
+      },
+      {
+        label: "Sentiment Score",
+        value: `${intel.sentimentScore}/100`,
+        tone: "text-slate-100",
+      },
+      {
+        label: "Response Rate",
+        value: `${intel.responseRate}%`,
+        tone: "text-slate-100",
+      },
+      {
+        label: "Unanswered Negative Reviews",
+        value: String(intel.unansweredNegative),
+        tone: "text-rose-400",
+      },
+      {
+        label: "Estimated Reputation Risk",
+        value: intel.reputationRisk,
+        tone: LEVEL_TEXT[intel.reputationRisk],
+      },
+    ],
+    [
+      intel.rating,
+      intel.reputationRisk,
+      intel.responseRate,
+      intel.sentimentScore,
+      intel.totalReviews,
+      intel.unansweredNegative,
+    ]
+  );
 
   return (
     <div className="mx-auto grid max-w-[1600px] grid-cols-1 gap-5 xl:grid-cols-[minmax(0,1fr)_320px]">
@@ -256,3 +285,5 @@ export default function ReviewsView({ result }: { result: AnalysisResult }) {
     </div>
   );
 }
+
+export default memo(ReviewsView);

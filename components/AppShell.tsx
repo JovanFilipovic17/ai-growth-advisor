@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { generateAnalysis } from "@/lib/mockAnalysis";
 import { AnalysisResult, CompanyInput } from "@/lib/types";
 import Sidebar, { ActiveView } from "./shell/Sidebar";
@@ -11,6 +11,14 @@ import RoiForecastView from "./views/RoiForecastView";
 import ProposalBuilderView from "./views/ProposalBuilderView";
 import WebsiteAuditView from "./views/WebsiteAuditView";
 import ReviewsView from "./views/ReviewsView";
+
+const MOBILE_VIEW_TABS: { view: ActiveView; label: string }[] = [
+  { view: "overview", label: "Overview" },
+  { view: "website", label: "Website Audit" },
+  { view: "reviews", label: "Reviews" },
+  { view: "roi", label: "ROI Forecast" },
+  { view: "proposal", label: "Proposal" },
+];
 
 export default function AppShell() {
   const [result, setResult] = useState<AnalysisResult | null>(null);
@@ -31,41 +39,43 @@ export default function AppShell() {
     setPendingAnchor(null);
   }, [pendingAnchor]);
 
-  function handleAnalyze(input: CompanyInput) {
+  const handleAnalyze = useCallback((input: CompanyInput) => {
     setResult(generateAnalysis(input));
     setActiveView("overview");
     window.scrollTo({ top: 0 });
-  }
+  }, []);
 
-  function handleNewAnalysis() {
+  const handleNewAnalysis = useCallback(() => {
     setResult(null);
     setActiveView("overview");
     window.scrollTo({ top: 0 });
-  }
+  }, []);
 
-  function handleNavigate(view: ActiveView, anchor?: string) {
+  const handleNavigate = useCallback((view: ActiveView, anchor?: string) => {
     setActiveView(view);
     if (anchor) {
       setPendingAnchor(anchor);
     } else {
       window.scrollTo({ top: 0 });
     }
-  }
+  }, []);
 
-  function renderView(analysis: AnalysisResult) {
+  const activeReportView = useMemo(() => {
+    if (!result) return null;
+
     switch (activeView) {
       case "website":
-        return <WebsiteAuditView result={analysis} />;
+        return <WebsiteAuditView result={result} />;
       case "reviews":
-        return <ReviewsView result={analysis} />;
+        return <ReviewsView result={result} />;
       case "roi":
-        return <RoiForecastView result={analysis} />;
+        return <RoiForecastView result={result} />;
       case "proposal":
-        return <ProposalBuilderView result={analysis} />;
+        return <ProposalBuilderView result={result} />;
       default:
-        return <ReportView result={analysis} />;
+        return <ReportView result={result} />;
     }
-  }
+  }, [activeView, result]);
 
   return (
     <div className="flex min-h-screen">
@@ -75,15 +85,7 @@ export default function AppShell() {
         <main className="flex-1 px-4 py-6 sm:px-6 lg:px-8">
           {result && (
             <div className="mb-4 flex gap-2 overflow-x-auto lg:hidden" role="tablist" aria-label="Report views">
-              {(
-                [
-                  ["overview", "Overview"],
-                  ["website", "Website Audit"],
-                  ["reviews", "Reviews"],
-                  ["roi", "ROI Forecast"],
-                  ["proposal", "Proposal"],
-                ] as const
-              ).map(([view, label]) => (
+              {MOBILE_VIEW_TABS.map(({ view, label }) => (
                 <button
                   key={view}
                   type="button"
@@ -102,7 +104,7 @@ export default function AppShell() {
             </div>
           )}
           {result ? (
-            renderView(result)
+            activeReportView
           ) : (
             <div className="mx-auto mt-6 flex max-w-3xl flex-col gap-6">
               <div>

@@ -29,6 +29,29 @@ export type Priority = "High" | "Medium" | "Low";
 export type Difficulty = "Easy" | "Medium" | "Hard";
 export type ComplexityLevel = "Low" | "Medium" | "High";
 
+/** Business signals the engine can extract from the owner's free-text notes. */
+export type SignalId =
+  | "missed_calls"
+  | "slow_followup"
+  | "no_crm"
+  | "review_gap"
+  | "no_shows"
+  | "booking_friction"
+  | "manual_reporting"
+  | "churn_risk"
+  | "website_conversion"
+  | "social_inactive"
+  | "admin_overload";
+
+export interface DetectedSignal {
+  id: SignalId;
+  label: string;
+  /** The notes phrase that triggered the detection. */
+  evidence: string;
+  /** Industry-adjusted relevance, 1 (noted) to 3 (critical for this industry). */
+  weight: number;
+}
+
 export interface Problem {
   title: string;
   detail: string;
@@ -68,6 +91,8 @@ export interface RoiForecastPoint {
 export interface ReportData {
   opportunityScore: number;
   scoreLabel: string;
+  /** Human-readable "x and y" naming the two best quick-win opportunities. */
+  quickWinPair: string;
   revenueLeak: number;
   complexity: ComplexityLevel;
   complexityNote: string;
@@ -95,6 +120,7 @@ export interface AnalysisResult {
   businessSummary: string;
   problems: Problem[];
   opportunities: Opportunity[];
+  signals: DetectedSignal[];
   roi: RoiEstimate;
   report: ReportData;
   outreach: Outreach;

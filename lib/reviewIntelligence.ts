@@ -1,4 +1,5 @@
 import { AnalysisResult, ComplexityLevel, Industry, Priority } from "./types";
+import { hasSignal } from "./signals";
 
 export type SentimentTone = "positive" | "negative" | "neutral";
 
@@ -303,8 +304,15 @@ export function buildReviewIntelligence(result: AnalysisResult): ReviewIntellige
 
   const negCount = Math.round((totalReviews * negative) / 100);
   const unansweredNegative = Math.round(negCount * 0.85);
-  const reputationRisk: ComplexityLevel =
+  // An owner-confirmed review gap bumps the risk verdict one level.
+  const reviewGapFlagged = hasSignal(result.signals, "review_gap");
+  const baseRisk: ComplexityLevel =
     negative >= 20 ? "High" : negative >= 10 ? "Medium" : "Low";
+  const reputationRisk: ComplexityLevel = reviewGapFlagged
+    ? baseRisk === "Low"
+      ? "Medium"
+      : "High"
+    : baseRisk;
 
   const responseRows: ResponseRow[] = [
     {
@@ -366,6 +374,8 @@ export function buildReviewIntelligence(result: AnalysisResult): ReviewIntellige
     responseRows,
     recommendations,
     samples: profile.samples,
-    insight: `The strongest opportunity is not only replying to reviews, but triggering review requests automatically after ${profile.touchpoint}.`,
+    insight: reviewGapFlagged
+      ? `Your notes flag review management as a live pain point — that raises the urgency here. Deploy the Review Response Agent first, then trigger review requests automatically after ${profile.touchpoint} to rebuild the rating from both sides.`
+      : `The strongest opportunity is not only replying to reviews, but triggering review requests automatically after ${profile.touchpoint}.`,
   };
 }

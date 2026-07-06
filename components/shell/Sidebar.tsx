@@ -1,5 +1,6 @@
 "use client";
 
+import { memo } from "react";
 import { SOON_BADGE } from "../buttonStyles";
 
 export type ActiveView = "overview" | "website" | "reviews" | "roi" | "proposal";
@@ -63,7 +64,7 @@ interface SidebarProps {
   onNavigate: (view: ActiveView, anchor?: string) => void;
 }
 
-export default function Sidebar({ activeView, onNavigate }: SidebarProps) {
+function Sidebar({ activeView, onNavigate }: SidebarProps) {
   return (
     <aside className="sticky top-0 hidden h-screen w-60 flex-none flex-col border-r border-edge bg-[#060d19]/80 lg:flex">
       <div className="flex items-center gap-2.5 px-5 py-5">
@@ -146,3 +147,5 @@ export default function Sidebar({ activeView, onNavigate }: SidebarProps) {
     </aside>
   );
 }
+
+export default memo(Sidebar);

@@ -1,5 +1,6 @@
 "use client";
 
+import { memo } from "react";
 import { PRIMARY_BUTTON } from "../buttonStyles";
 
 const TABS = [
@@ -15,7 +16,7 @@ interface TopNavProps {
   onNewAnalysis: () => void;
 }
 
-export default function TopNav({ onNewAnalysis }: TopNavProps) {
+function TopNav({ onNewAnalysis }: TopNavProps) {
   return (
     <header className="sticky top-0 z-40 border-b border-edge bg-[#050b14]/75 backdrop-blur">
       <div className="flex items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
@@ -56,3 +57,5 @@ export default function TopNav({ onNewAnalysis }: TopNavProps) {
     </header>
   );
 }
+
+export default memo(TopNav);

@@ -1,4 +1,5 @@
 import { AnalysisResult, Industry, Priority } from "./types";
+import { hasSignal } from "./signals";
 
 export type RatingTone = "emerald" | "amber" | "rose";
 export type FunnelTone = "slate" | "amber" | "rose" | "emerald";
@@ -145,12 +146,20 @@ const READINESS: Record<string, AuditRating> = {
 /** Deterministic website audit derived from the mock analysis — no crawling. */
 export function buildWebsiteAudit(result: AnalysisResult): WebsiteAudit {
   const profile = PROFILES[result.industry];
-  const { report } = result;
+  const { report, signals } = result;
 
   const conversionScore = Math.min(
     90,
     Math.max(40, report.opportunityScore - 14)
   );
+
+  // Owner notes about conversion or booking problems harden the lead-capture verdict.
+  const conversionFlagged =
+    hasSignal(signals, "website_conversion") ||
+    hasSignal(signals, "booking_friction");
+  const leadCapture: AuditRating = conversionFlagged
+    ? { value: "Weak", note: "Major Gap — flagged in notes", tone: WEAK }
+    : profile.leadCapture;
 
   const ctaFinding: AuditFinding = {
     title: "Primary CTA is visible but not repeated",
@@ -176,13 +185,19 @@ export function buildWebsiteAudit(result: AnalysisResult): WebsiteAudit {
     "Add review carousel and trust section",
   ];
 
-  const insight = `The site attracts real intent but loses most visitors at the ${profile.funnel[1].label.toLowerCase()} step. The fastest improvement is automated ${profile.leadChannel} follow-up after form submission.`;
+  const responseGapFlagged =
+    hasSignal(signals, "missed_calls") || hasSignal(signals, "slow_followup");
+  const insight = `The site attracts real intent but loses most visitors at the ${profile.funnel[1].label.toLowerCase()} step. The fastest improvement is automated ${profile.leadChannel} follow-up after form submission.${
+    responseGapFlagged
+      ? " The owner's notes confirm response-time gaps, which makes this the highest-certainty fix in the whole report."
+      : ""
+  }`;
 
   return {
     conversionScore,
     scoreLabel: scoreLabelFor(conversionScore),
     trustSignals: profile.trustSignals,
-    leadCapture: profile.leadCapture,
+    leadCapture,
     mobileExperience: profile.mobileExperience,
     automationReadiness: READINESS[report.quickWinPotential],
     tagline: profile.tagline,

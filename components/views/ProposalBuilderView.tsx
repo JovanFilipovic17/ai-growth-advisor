@@ -1,8 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { AnalysisResult } from "@/lib/types";
+import { AnalysisResult, DetectedSignal } from "@/lib/types";
 import { formatCurrency } from "@/lib/format";
+import { signalPhrase } from "@/lib/signals";
 import Panel from "../Panel";
 import PlaceholderButton from "../PlaceholderButton";
 import PreviewSkeleton from "../PreviewSkeleton";
@@ -16,44 +17,59 @@ const STATUS_STYLES: Record<SectionStatus, string> = {
   "Needs Review": "border-rose-500/30 bg-rose-500/10 text-rose-400",
 };
 
-const SECTIONS: { title: string; description: string; status: SectionStatus }[] = [
-  {
-    title: "Executive Summary",
-    description: "Overview of findings and strategic AI growth opportunities.",
-    status: "Complete",
-  },
-  {
-    title: "Current Business Bottlenecks",
-    description: "Analysis of operational inefficiencies and revenue leaks.",
-    status: "Complete",
-  },
-  {
-    title: "Recommended AI Automations",
-    description:
-      "Suggested AI solutions for lead handling, reviews, and scheduling.",
-    status: "Complete",
-  },
-  {
-    title: "ROI Estimate",
-    description: "Financial projections and cost-benefit analysis.",
-    status: "Complete",
-  },
-  {
-    title: "30-Day Implementation Plan",
-    description: "Timeline and roadmap for deploying initial automations.",
-    status: "Draft",
-  },
-  {
-    title: "Pricing Options",
-    description: "Proposed packages and investment details.",
-    status: "Needs Review",
-  },
-  {
-    title: "Next Steps",
-    description: "Action items and approval process.",
-    status: "Complete",
-  },
-];
+interface ProposalSection {
+  title: string;
+  description: string;
+  status: SectionStatus;
+}
+
+// Descriptions sharpen when owner notes produced detected signals.
+function buildSections(signals: DetectedSignal[]): ProposalSection[] {
+  const hasSignals = signals.length > 0;
+  return [
+    {
+      title: "Executive Summary",
+      description: hasSignals
+        ? `Findings and strategy, sharpened by owner-confirmed signals: ${signalPhrase(signals, 3)}.`
+        : "Overview of findings and strategic AI growth opportunities.",
+      status: "Complete",
+    },
+    {
+      title: "Current Business Bottlenecks",
+      description: hasSignals
+        ? "Operational inefficiencies and revenue leaks, re-ranked around what the owner reported first-hand."
+        : "Analysis of operational inefficiencies and revenue leaks.",
+      status: "Complete",
+    },
+    {
+      title: "Recommended AI Automations",
+      description: hasSignals
+        ? `AI solutions targeting ${signalPhrase(signals)} ahead of the standard playbook.`
+        : "Suggested AI solutions for lead handling, reviews, and scheduling.",
+      status: "Complete",
+    },
+    {
+      title: "ROI Estimate",
+      description: "Financial projections and cost-benefit analysis.",
+      status: "Complete",
+    },
+    {
+      title: "30-Day Implementation Plan",
+      description: "Timeline and roadmap for deploying initial automations.",
+      status: "Draft",
+    },
+    {
+      title: "Pricing Options",
+      description: "Proposed packages and investment details.",
+      status: "Needs Review",
+    },
+    {
+      title: "Next Steps",
+      description: "Action items and approval process.",
+      status: "Complete",
+    },
+  ];
+}
 
 const ACTION_BUTTONS = [
   "Generate Proposal PDF",
@@ -160,6 +176,7 @@ export default function ProposalBuilderView({
   result: AnalysisResult;
 }) {
   const { companyName, report } = result;
+  const sections = buildSections(result.signals);
 
   return (
     <div className="mx-auto flex max-w-[1600px] flex-col gap-5">
@@ -183,7 +200,7 @@ export default function ProposalBuilderView({
       <div className="grid grid-cols-1 gap-5 xl:grid-cols-[minmax(0,1fr)_360px]">
         <div className="flex min-w-0 flex-col gap-5">
           <div className="flex flex-col gap-3">
-            {SECTIONS.map((section) => (
+            {sections.map((section) => (
               <div
                 key={section.title}
                 className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-edge bg-surface-panel p-4 shadow-panel"

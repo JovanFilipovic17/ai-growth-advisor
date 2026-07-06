@@ -2,6 +2,7 @@ import { AnalysisResult } from "@/lib/types";
 import Panel from "../Panel";
 import ReportHeader from "./ReportHeader";
 import KpiCards from "./KpiCards";
+import DetectedSignals from "./DetectedSignals";
 import BottlenecksSection from "./BottlenecksSection";
 import OpportunitiesTable from "./OpportunitiesTable";
 import RoiForecastChart from "./RoiForecastChart";
@@ -28,6 +29,8 @@ export default function ReportView({ result }: { result: AnalysisResult }) {
             {result.businessSummary}
           </p>
         </Panel>
+
+        <DetectedSignals signals={result.signals} />
 
         <div className="grid grid-cols-1 gap-5 min-[1720px]:grid-cols-[5fr_6fr]">
           <BottlenecksSection bottlenecks={report.bottlenecks} />

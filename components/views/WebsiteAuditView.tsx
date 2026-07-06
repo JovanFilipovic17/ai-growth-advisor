@@ -1,3 +1,4 @@
+import { memo, useMemo } from "react";
 import { AnalysisResult, Priority } from "@/lib/types";
 import {
   buildWebsiteAudit,
@@ -42,7 +43,15 @@ const IMPROVEMENT_ICONS = [
   "M12 3l1.9 4.6 4.9.4-3.7 3.2 1.1 4.8L12 13.5 7.8 16l1.1-4.8L5.2 8l4.9-.4L12 3z",
 ];
 
-function RatingCard({ label, rating }: { label: string; rating: AuditRating }) {
+const SITE_PREVIEW_WIDTHS = ["w-full", "w-10/12", "w-4/5"];
+
+const RatingCard = memo(function RatingCard({
+  label,
+  rating,
+}: {
+  label: string;
+  rating: AuditRating;
+}) {
   return (
     <div className={CARD_CLASS}>
       <p className={LABEL_CLASS}>{label}</p>
@@ -52,21 +61,29 @@ function RatingCard({ label, rating }: { label: string; rating: AuditRating }) {
       <p className="mt-1 text-xs text-slate-400">{rating.note}</p>
     </div>
   );
-}
+});
 
-function SitePreviewLines({ count }: { count: number }) {
-  const widths = ["w-full", "w-10/12", "w-4/5"];
+const SitePreviewLines = memo(function SitePreviewLines({
+  count,
+}: {
+  count: number;
+}) {
   return (
     <div aria-hidden="true" className="space-y-1">
       {Array.from({ length: count }, (_, i) => (
-        <div key={i} className={`h-1 rounded bg-slate-300 ${widths[i % widths.length]}`} />
+        <div
+          key={i}
+          className={`h-1 rounded bg-slate-300 ${
+            SITE_PREVIEW_WIDTHS[i % SITE_PREVIEW_WIDTHS.length]
+          }`}
+        />
       ))}
     </div>
   );
-}
+});
 
-export default function WebsiteAuditView({ result }: { result: AnalysisResult }) {
-  const audit = buildWebsiteAudit(result);
+function WebsiteAuditView({ result }: { result: AnalysisResult }) {
+  const audit = useMemo(() => buildWebsiteAudit(result), [result]);
   const siteLabel = result.websiteUrl || result.companyName;
 
   return (
@@ -250,3 +267,5 @@ export default function WebsiteAuditView({ result }: { result: AnalysisResult })
     </div>
   );
 }
+
+export default memo(WebsiteAuditView);

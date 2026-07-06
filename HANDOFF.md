@@ -1,8 +1,15 @@
 # HANDOFF.md
 
-## Current Status (Phase 4A.2 + cleanup pass complete)
+## Current Status (Phase 4B complete — notes-based signal engine)
 
 **MVP is implemented and stable** as a premium dark B2B SaaS dashboard ("AI Growth Advisor" cockpit). `npm run build` passes (typecheck + ESLint clean), no env vars, no external services — deploys to Vercel with zero config.
+
+**Signal engine (`lib/signals.ts`, deterministic — no LLM):** the optional notes field now drives the analysis. `detectSignals(notes, industry)` keyword-matches 11 business signals (missed calls, slow follow-up, no CRM, review gap, no-shows, booking friction, manual reporting, churn risk, weak website conversion, inactive social, admin overload), each with per-industry weights (1–3). `applySignals()` re-ranks problems/opportunities via index-aligned `OPPORTUNITY_TAGS`, upgrades priority when boost ≥ 3, and marks paired problems as owner-confirmed. Downstream effects: recoverable hours +2/signal (cap 8) → savings/forecast/break-even shift; AI Opportunity Score +min(8, total weight); quick-win/complexity recompute on the new ranking; revenue leak re-sums the new top-4 bottlenecks; executive summary, AI insight, and outreach copy name the detected signals; Website Audit hardens Lead Capture when conversion/booking is flagged; Reviews bumps reputation risk when a review gap is flagged; Proposal Builder section descriptions reference the signals. Overview shows a "Detected Signals" panel (`components/report/DetectedSignals.tsx`, max 6 chips with relevance + matched phrase). `ReportData.quickWinPair` carries the top-two quick-win names for reuse across views. With empty notes everything behaves exactly as before.
+
+**Example notes for testing (dental works well for all three):**
+1. "We keep missing calls during busy hours and leads wait days for a reply." → missed calls + slow follow-up detected; AI receptionist jumps to #1; score 82 → 89; savings €1,575 → €1,715.
+2. "We get bad reviews about waiting times and nobody replies to our reviews." → review gap; review request flow leads; Reviews view risk Medium → High with flagged insight.
+3. "Lots of no-shows lately and patients say booking online is confusing." → no-shows + booking friction; appointment reminders lead; Website Audit lead capture shows "Major Gap — flagged in notes".
 
 **Implemented views** (sidebar-navigable, `activeView` state in `components/AppShell.tsx`):
 - **Overview** (`components/report/`) — KPI cards, company snapshot, bottlenecks, opportunities table, ROI chart, outreach messages.
@@ -20,12 +27,11 @@
 **Shared building blocks:** `components/Panel.tsx` (section wrapper), `components/cardStyles.ts` (KPI card classes), `components/ScoreRing.tsx`, `components/PreviewSkeleton.tsx`, `components/buttonStyles.ts` (`PRIMARY_BUTTON`/`GHOST_BUTTON`/`PLACEHOLDER_BUTTON`/`SOON_BADGE`). Design tokens in `tailwind.config.ts` (`surface-panel`/`surface-raised`, `edge`, `shadow-panel`/`shadow-btn`) and the navy gradient background in `app/globals.css`. Reuse these for any new UI.
 
 **Next recommended phases** (not started, do not build unless asked):
-1. Smarter notes-based analysis (let the optional notes field actually influence which bottlenecks/opportunities surface)
-2. Real proposal/PDF export
-3. Saved companies/reports
-4. MCP/docs knowledge layer
-5. n8n workflow integration
-6. Real public data integrations (Google Reviews, site crawling) later
+1. Real proposal/PDF export
+2. Saved companies/reports
+3. MCP/docs knowledge layer
+4. n8n workflow integration
+5. Real public data integrations (Google Reviews, site crawling) later
 
 ## Project Name
 

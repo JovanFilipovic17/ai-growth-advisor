@@ -1,3 +1,4 @@
+import { memo, useMemo } from "react";
 import { AnalysisResult, Difficulty } from "@/lib/types";
 import { formatCompactCurrency, formatCurrency } from "@/lib/format";
 import Panel from "../Panel";
@@ -21,7 +22,7 @@ function roundTo(value: number, step: number): number {
   return Math.round(value / step) * step;
 }
 
-export default function RoiForecastView({ result }: { result: AnalysisResult }) {
+function RoiForecastView({ result }: { result: AnalysisResult }) {
   const { report, roi, companyName, opportunities } = result;
 
   const implementationMid = Math.round(
@@ -29,9 +30,9 @@ export default function RoiForecastView({ result }: { result: AnalysisResult }) 
   );
   const monthly = roi.estimatedMonthlyValue;
   const breakEvenExact = (implementationMid / monthly).toFixed(1);
-  const totalHours = opportunities.reduce(
-    (sum, o) => sum + o.hoursSavedPerMonth,
-    0
+  const totalHours = useMemo(
+    () => opportunities.reduce((sum, o) => sum + o.hoursSavedPerMonth, 0),
+    [opportunities]
   );
 
   const stats = [
@@ -107,8 +108,29 @@ export default function RoiForecastView({ result }: { result: AnalysisResult }) 
     { label: "Ongoing retainer", value: `${formatCurrency(roi.monthlyRetainer)}/mo` },
   ];
 
-  const topTwo = report.insight.split(" — ")[0].replace(/^Start with /, "");
-  const roiInsight = `Start with ${topTwo}. This combination has the fastest break-even and lowest implementation risk, and pays for itself by month ${report.breakEvenMonth}.`;
+  const roiInsight = `Start with ${report.quickWinPair}. This combination has the fastest break-even and lowest implementation risk, and pays for itself by month ${report.breakEvenMonth}.`;
+
+  const valueRows = useMemo(
+    () =>
+      opportunities.map((opp, i) => {
+        const monthlyValue =
+          Math.round((opp.hoursSavedPerMonth * roi.hourlyValue) / 10) * 10;
+        const setupCost = Math.max(
+          100,
+          roundTo((implementationMid * opp.hoursSavedPerMonth) / totalHours, 50)
+        );
+
+        return {
+          title: opp.title,
+          difficulty: opp.difficulty,
+          monthlyValue,
+          setupCost,
+          payback: (setupCost / monthlyValue).toFixed(1),
+          confidence: Math.max(80, 96 - i * 3),
+        };
+      }),
+    [implementationMid, opportunities, roi.hourlyValue, totalHours]
+  );
 
   return (
     <div className="mx-auto flex max-w-[1600px] flex-col gap-5">
@@ -176,45 +198,35 @@ export default function RoiForecastView({ result }: { result: AnalysisResult }) 
                   </tr>
                 </thead>
                 <tbody>
-                  {opportunities.map((opp, i) => {
-                    const monthlyValue =
-                      Math.round((opp.hoursSavedPerMonth * roi.hourlyValue) / 10) *
-                      10;
-                    const setupCost = Math.max(
-                      100,
-                      roundTo(
-                        (implementationMid * opp.hoursSavedPerMonth) / totalHours,
-                        50
-                      )
-                    );
-                    const payback = (setupCost / monthlyValue).toFixed(1);
-                    const confidence = Math.max(80, 96 - i * 3);
-                    return (
-                      <tr
-                        key={opp.title}
-                        className="border-b border-edge last:border-0"
-                      >
-                        <td className="px-4 py-3 font-medium text-slate-100">
-                          {opp.title}
-                        </td>
-                        <td className="px-3 py-3 font-medium text-emerald-400">
-                          {formatCurrency(monthlyValue)}/mo
-                        </td>
-                        <td className="px-3 py-3 text-slate-300">
-                          {formatCurrency(setupCost)}
-                        </td>
-                        <td className="px-3 py-3">
-                          <span
-                            className={`rounded-full border px-2 py-0.5 text-[11px] font-medium ${COMPLEXITY_STYLES[opp.difficulty]}`}
-                          >
-                            {COMPLEXITY_LABEL[opp.difficulty]}
-                          </span>
-                        </td>
-                        <td className="px-3 py-3 text-slate-300">{payback} mo</td>
-                        <td className="px-3 py-3 text-slate-300">{confidence}%</td>
-                      </tr>
-                    );
-                  })}
+                  {valueRows.map((row) => (
+                    <tr
+                      key={row.title}
+                      className="border-b border-edge last:border-0"
+                    >
+                      <td className="px-4 py-3 font-medium text-slate-100">
+                        {row.title}
+                      </td>
+                      <td className="px-3 py-3 font-medium text-emerald-400">
+                        {formatCurrency(row.monthlyValue)}/mo
+                      </td>
+                      <td className="px-3 py-3 text-slate-300">
+                        {formatCurrency(row.setupCost)}
+                      </td>
+                      <td className="px-3 py-3">
+                        <span
+                          className={`rounded-full border px-2 py-0.5 text-[11px] font-medium ${COMPLEXITY_STYLES[row.difficulty]}`}
+                        >
+                          {COMPLEXITY_LABEL[row.difficulty]}
+                        </span>
+                      </td>
+                      <td className="px-3 py-3 text-slate-300">
+                        {row.payback} mo
+                      </td>
+                      <td className="px-3 py-3 text-slate-300">
+                        {row.confidence}%
+                      </td>
+                    </tr>
+                  ))}
                 </tbody>
               </table>
             </div>
@@ -284,3 +296,5 @@ export default function RoiForecastView({ result }: { result: AnalysisResult }) 
     </div>
   );
 }
+
+export default memo(RoiForecastView);

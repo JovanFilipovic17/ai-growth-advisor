@@ -1,6 +1,7 @@
 import {
   Bottleneck,
   ComplexityLevel,
+  DetectedSignal,
   Difficulty,
   Opportunity,
   Priority,
@@ -10,6 +11,7 @@ import {
   RoiForecastPoint,
 } from "./types";
 import { formatCurrency } from "./format";
+import { signalPhrase, totalSignalWeight } from "./signals";
 
 const PRIORITY_WEIGHT: Record<Priority, number> = { High: 0, Medium: 1, Low: 2 };
 const DIFFICULTY_WEIGHT: Record<Difficulty, number> = { Easy: 1, Medium: 2, Hard: 3 };
@@ -64,11 +66,14 @@ function quickWinFor(opportunities: Opportunity[]): {
 export function buildReport(
   problems: Problem[],
   opportunities: Opportunity[],
-  roi: RoiEstimate
+  roi: RoiEstimate,
+  signals: DetectedSignal[] = []
 ): ReportData {
+  // Owner-confirmed signals raise confidence in the upside estimate.
+  const signalBonus = Math.min(8, totalSignalWeight(signals));
   const opportunityScore = Math.min(
     96,
-    Math.max(40, Math.round(50 + roi.monthlyHoursSaved * 0.7))
+    Math.max(40, Math.round(50 + roi.monthlyHoursSaved * 0.7) + signalBonus)
   );
 
   const bottlenecks: Bottleneck[] = problems.slice(0, 4).map((problem, i) => {
@@ -110,14 +115,23 @@ export function buildReport(
         (DIFFICULTY_WEIGHT[b.difficulty] * 2 + PRIORITY_WEIGHT[b.priority])
     )
     .slice(0, 2);
+  const quickWinPair = `${quickWins[0].title.toLowerCase()} and ${quickWins[1].title.toLowerCase()}`;
 
-  const insight = `Start with ${quickWins[0].title.toLowerCase()} and ${quickWins[1].title.toLowerCase()} — the lowest-complexity builds on this roadmap with immediate time savings. At ${formatCurrency(
-    monthlySavings
-  )}/mo in recovered capacity, the engagement breaks even around month ${breakEvenMonth} and compounds from there.`;
+  const insight =
+    signals.length > 0
+      ? `Start with ${quickWinPair} — your notes independently surface ${signalPhrase(
+          signals
+        )}, which is exactly what these builds attack. At ${formatCurrency(
+          monthlySavings
+        )}/mo in recovered capacity the engagement breaks even around month ${breakEvenMonth}, and every owner-confirmed signal makes that estimate more certain, not less.`
+      : `Start with ${quickWinPair} — the lowest-complexity builds on this roadmap with immediate time savings. At ${formatCurrency(
+          monthlySavings
+        )}/mo in recovered capacity, the engagement breaks even around month ${breakEvenMonth} and compounds from there.`;
 
   return {
     opportunityScore,
     scoreLabel: scoreLabelFor(opportunityScore),
+    quickWinPair,
     revenueLeak,
     ...complexityFor(opportunities),
     ...quickWinFor(opportunities),
