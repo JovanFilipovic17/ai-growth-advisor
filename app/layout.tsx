@@ -2,7 +2,7 @@ import type { Metadata, Viewport } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Business Intelligence Agent — AI Growth Advisor",
+  title: "Business Intelligence Agent - AI Growth Advisor",
   description:
     "Find hidden AI automation opportunities inside any business.",
 };
