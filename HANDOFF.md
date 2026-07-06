@@ -24,16 +24,17 @@
 
 **Still mock/local (by design):** Website Audit, Reviews, ROI Forecast, and Proposal preview are all deterministic template data + arithmetic keyed by the 5 industries (`lib/industryData.ts`, `lib/report.ts`, `lib/websiteAudit.ts`, `lib/reviewIntelligence.ts`). No scraping, no Google Reviews API, no APIs/DB/auth/payments/LLM calls.
 
-**Placeholder features** (visually disabled with "Soon" badge / muted style via `components/PlaceholderButton.tsx` + `buttonStyles.ts`, not broken buttons): Generate Proposal PDF, Download PDF, Send by Email, Export to CRM, Regenerate with AI, View Details, Accept Recommendation, Explore Options, Edit (proposal sections), and top-nav tabs Companies/Reports/Automations/Settings.
+**Proposal PDF export (`lib/proposalPdf.ts`, client-side only — `jspdf` + `jspdf-autotable`, dynamically imported so they never touch the initial bundle):** `generateProposalPdf(result, settings)` builds a real multi-page document straight from `AnalysisResult` — cover, Executive Summary, Current Business Bottlenecks (table), Recommended AI Automations (table), ROI Estimate (+ hand-drawn forecast bar chart), 30-Day Implementation Plan (derived by bucketing the priority-ordered opportunities into 4 weeks), Investment Summary, Next Steps — and triggers a browser download named `<company>-ai-growth-proposal.pdf`. This is independent of the cosmetic skeleton preview pane in `ProposalBuilderView.tsx`, which still renders placeholder bars. "Generate Proposal PDF" (`ReportHeader.tsx` + `ProposalBuilderView.tsx`) and "Download PDF" (`ProposalBuilderView.tsx`) are now live buttons; the Proposal Settings toggles (Include ROI chart / implementation timeline / pricing package) are wired into real state that gates which sections are generated. Tone/Length/Currency selects remain decorative (would need a separate prose-generation engine). Verified end-to-end with a headless browser: PDFs contain the real signal-aware content (company name, business summary, bottleneck/opportunity tables, ROI numbers), and toggling settings measurably changes the output.
+
+**Placeholder features** (visually disabled with "Soon" badge / muted style via `components/PlaceholderButton.tsx` + `buttonStyles.ts`, not broken buttons): Send by Email, Export to CRM, Regenerate with AI, View Details, Accept Recommendation, Explore Options, Edit (proposal sections), and top-nav tabs Companies/Reports/Automations/Outreach/Settings.
 
 **Shared building blocks:** `components/Panel.tsx` (section wrapper), `components/cardStyles.ts` (KPI card classes), `components/ScoreRing.tsx`, `components/PreviewSkeleton.tsx`, `components/buttonStyles.ts` (`PRIMARY_BUTTON`/`GHOST_BUTTON`/`PLACEHOLDER_BUTTON`/`SOON_BADGE`). Design tokens in `tailwind.config.ts` (`surface-panel`/`surface-raised`, `edge`, `shadow-panel`/`shadow-btn`) and the navy gradient background in `app/globals.css`. Reuse these for any new UI.
 
 **Next recommended phases** (not started, do not build unless asked):
-1. Real proposal/PDF export
-2. Saved companies/reports
-3. MCP/docs knowledge layer
-4. n8n workflow integration
-5. Real public data integrations (Google Reviews, site crawling) later
+1. Saved companies/reports
+2. MCP/docs knowledge layer
+3. n8n workflow integration
+4. Real public data integrations (Google Reviews, site crawling) later
 
 ## Project Name
 

@@ -1,16 +1,30 @@
+"use client";
+
+import { useState } from "react";
+import type { AnalysisResult } from "@/lib/types";
+import { generateProposalPdf } from "@/lib/proposalPdf";
 import PlaceholderButton from "../PlaceholderButton";
+import { PRIMARY_BUTTON } from "../buttonStyles";
 
 interface ReportHeaderProps {
-  companyName: string;
-  websiteUrl: string;
-  industryLabel: string;
+  result: AnalysisResult;
 }
 
-export default function ReportHeader({
-  companyName,
-  websiteUrl,
-  industryLabel,
-}: ReportHeaderProps) {
+export default function ReportHeader({ result }: ReportHeaderProps) {
+  const { companyName, websiteUrl, industryLabel } = result;
+  const [isGenerating, setIsGenerating] = useState(false);
+
+  async function handleGeneratePdf() {
+    setIsGenerating(true);
+    try {
+      await generateProposalPdf(result);
+    } catch (error) {
+      console.error("Failed to generate proposal PDF", error);
+    } finally {
+      setIsGenerating(false);
+    }
+  }
+
   return (
     <div className="flex flex-wrap items-start justify-between gap-4">
       <div>
@@ -38,10 +52,14 @@ export default function ReportHeader({
       </div>
 
       <div className="flex flex-wrap gap-2.5">
-        <PlaceholderButton
-          label="Generate Proposal PDF"
-          title="Roadmap feature — PDF export ships in a later phase"
-        />
+        <button
+          type="button"
+          onClick={handleGeneratePdf}
+          disabled={isGenerating}
+          className={`${PRIMARY_BUTTON} disabled:cursor-wait disabled:opacity-70`}
+        >
+          {isGenerating ? "Generating…" : "Generate Proposal PDF"}
+        </button>
         <PlaceholderButton
           label="Export to CRM"
           title="Roadmap feature — CRM export ships in a later phase"
