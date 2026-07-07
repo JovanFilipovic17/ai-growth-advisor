@@ -1,253 +1,62 @@
-# AI Growth Advisor
+# IC Systems Growth Intelligence
 
-Premium AI business intelligence dashboard for consultants, freelancers, and small agencies.
+Private applied version of the AI Growth Advisor foundation for IC Systems.
 
-AI Growth Advisor helps turn company information into structured business insights: operational bottlenecks, AI automation opportunities, ROI forecasts, website audit signals, review intelligence, proposal sections, and outreach-ready recommendations.
+This app is a local, Vercel-ready Next.js/Tailwind dashboard for running controlled market and competitor intelligence experiments before adding real integrations.
 
-This project is built as a portfolio-ready MVP using Next.js, TypeScript, Tailwind CSS, and deterministic local business logic.
+The first private target use case is **solar panel competitor intelligence**.
 
----
+## Purpose
 
-## Overview
+IC Systems Growth Intelligence helps turn business context, target services/markets, competitor inputs, and notes into a structured management-ready intelligence report.
 
-AI Growth Advisor is designed as an AI consultant cockpit.
+The current version still uses deterministic local/mock analysis logic. It does not call real APIs, scrape websites, use a database, require auth, connect to n8n, use MCP, or call LLMs.
 
-A user enters basic company information such as:
+## Current Capabilities
 
-- Company name
-- Website URL
-- Industry
-- Optional business notes
-
-The app then generates a multi-view business intelligence report, including:
-
-- Company overview
-- Business bottlenecks
-- AI automation opportunities
-- ROI forecast
-- Website audit
-- Review intelligence
-- Proposal builder
-- Outreach-ready insights
-
-The current version uses local/mock deterministic logic. It does not use external APIs, scraping, authentication, databases, or paid AI calls.
-
----
-
-## Why This Project Exists
-
-Many small businesses have operational problems that can be improved with AI automation, but consultants often need time to identify:
-
-- where the business is losing time or revenue
-- which automation opportunity should come first
-- how to estimate ROI
-- how to structure the proposal
-- how to explain the value clearly to the client
-
-AI Growth Advisor demonstrates how an AI-powered business intelligence layer could help AI consultants and agencies prepare better client audits and proposals faster.
-
----
-
-## Features
-
-### 1. Business Intelligence Overview
-
-The main dashboard summarizes the company analysis and highlights:
-
-- AI Opportunity Score
-- Estimated monthly savings
-- Revenue leakage
-- Implementation complexity
-- Quick-win potential
-
-### 2. Business Bottlenecks
-
-The app detects mock operational bottlenecks based on the selected industry, such as:
-
-- missed lead follow-up
-- poor booking flow
-- weak review response
-- manual reporting
-- churn risk
-- customer support gaps
-
-Each bottleneck includes severity, estimated impact, and a suggested fix.
-
-### 3. AI Automation Opportunities
-
-The dashboard ranks potential AI automation solutions, such as:
-
-- AI receptionist
-- lead follow-up agent
-- review response agent
-- appointment reminder agent
-- customer support automation
-- reporting agent
-- retention / renewal automation
-
-Each opportunity includes priority, difficulty, estimated value, and confidence.
-
-### 4. Website Audit View
-
-A dedicated Website Audit view shows mock website intelligence, including:
-
-- conversion score
-- trust signals
-- lead capture quality
-- mobile experience
-- automation readiness
-- recommended website improvements
-
-### 5. Reviews / Review Intelligence View
-
-A dedicated Reviews view shows mock reputation intelligence, including:
-
-- rating overview
-- sentiment score
-- response rate
-- unanswered negative reviews
-- reputation risk
-- customer themes
-- AI recommendations
-
-### 6. ROI Forecast View
-
-A dedicated ROI view shows:
-
-- current monthly revenue leakage
-- expected recovery
-- implementation cost
-- break-even estimate
-- 6-month projected ROI
-- scenario-style forecast sections
-
-### 7. Proposal Builder View
-
-A dedicated Proposal Builder view structures a client-ready proposal with:
-
-- executive summary
-- current bottlenecks
-- recommended AI automations
-- ROI estimate
-- implementation plan
-- pricing options
-- next steps
-
-Export and CRM buttons are currently visual placeholders for future roadmap features.
-
----
-
-## Notes-Based Intelligence
-
-AI Growth Advisor now includes a deterministic signal engine that makes the analysis more personalized based on the optional business notes field.
-
-When the user adds notes about a company, the app detects business signals such as:
-
-- missed calls
-- slow lead follow-up
-- no CRM or messy customer data
-- unanswered reviews
-- bad reviews or reputation risk
-- appointment no-shows
-- booking friction
-- manual reporting
-- churn or renewal risk
-- weak website conversion
-- inactive social media
-- high admin workload
-
-These detected signals influence the generated business report across multiple views:
-
-- bottleneck severity
-- AI automation opportunity ranking
-- AI Opportunity Score
-- estimated monthly savings
-- ROI forecast
-- Website Audit findings
-- Review Intelligence insights
-- Proposal Builder sections
-- AI Insight / Recommended Next Step
-- outreach copy
-
-The signal engine is fully local and deterministic. It does not use external APIs, scraping, databases, or LLM calls.
-
-### Example Notes
-
-```text
-We keep missing calls during busy hours and leads wait days for a reply.
-
----
-
-## Tech Stack
-
-- Next.js
-- TypeScript
-- Tailwind CSS
-- React
-- Local deterministic analysis logic
-- Vercel-ready static deployment
-
----
-
-## Current Status
-
-This is an MVP demo.
-
-Implemented:
-
-- Premium dark SaaS dashboard UI
-- Multi-view dashboard shell
-- Overview dashboard
-- Website Audit view
-- Reviews view
+- Multi-view dashboard based on the AI Growth Advisor cockpit
+- Demo scenario/company input flow
+- Notes-based deterministic signal engine
+- Mock Website Audit view
+- Mock Reviews / reputation intelligence view
 - ROI Forecast view
-- Proposal Builder view
-- Local/mock business analysis
-- Responsive layout
+- Proposal / report builder
+- Client-side PDF export with `jspdf` and `jspdf-autotable`
+- Mobile Safari layout hotfixes
 - Static Vercel-ready build
 
-Not implemented yet:
+## First Private Use Case
 
-- real website scraping
-- real Google Reviews integration
-- real AI/LLM calls
-- authentication
-- database
-- saved reports
-- PDF export
-- CRM export
-- email sending
-- n8n workflow integration
+Solar panel competitor intelligence.
 
----
+Future workflow:
 
-## Demo Flow
+1. Enter IC Systems business context.
+2. Enter target service/market, for example solar panels.
+3. Find or input around 10 competitors.
+4. Analyze competitor websites, offers, lead capture, reviews, and content.
+5. Identify market gaps and opportunities.
+6. Generate a management-ready report.
+7. Later connect real APIs, MCP/docs, and n8n workflows.
 
-1. Enter a company name.
-2. Add a website URL.
-3. Select an industry.
-4. Optionally add business notes.
-5. Generate the business analysis.
-6. Explore the generated views:
-   - Overview
-   - Website Audit
-   - Reviews
-   - ROI Forecast
-   - Proposal Builder
+## Current Data Mode
 
----
+The app is safe for private experimentation because it is currently local/demo-first:
 
-## Supported Demo Industries
+- No real API calls
+- No database
+- No authentication
+- No scraping
+- No n8n workflow calls
+- No MCP connection
+- No LLM calls
+- No external data used unless manually typed into the form
 
-The MVP currently supports deterministic mock analysis for:
+## Environment
 
-- Dental clinic
-- Restaurant / catering
-- Gym / fitness studio
-- Balkan IPTV / OTT provider
-- Small e-commerce store
+Copy `.env.example` to `.env.local` when real integrations are introduced.
 
----
+`.env.local` is intentionally gitignored via `.env*.local`.
 
 ## Getting Started
 
@@ -263,157 +72,47 @@ Run the development server:
 npm run dev
 ```
 
-Open the app:
+Open:
 
 ```bash
 http://localhost:3000
 ```
 
-Build for production:
+Build:
 
 ```bash
 npm run build
 ```
 
-Run the production build locally:
+On Windows PowerShell, if `npm.ps1` is blocked by execution policy, use:
 
-```bash
-npm run start
+```powershell
+npm.cmd run build
 ```
 
----
+## Development Constraints
 
-## Project Structure
+Keep this private repo ready for real experiments, but do not add live integrations until explicitly requested.
 
-```text
-app/
-  layout.tsx
-  page.tsx
-  globals.css
+Allowed now:
 
-components/
-  AppShell.tsx
-  CompanyForm.tsx
-  CopyButton.tsx
-  Panel.tsx
-  ScoreRing.tsx
-  PreviewSkeleton.tsx
-  cardStyles.ts
-  buttonStyles.ts
+- copy/positioning updates
+- deterministic local logic
+- manually entered competitor/business context
+- mock/demo competitor intelligence UI
+- local export/report generation
 
-components/shell/
-  Sidebar.tsx
-  TopNav.tsx
+Not yet:
 
-components/report/
-  ReportView.tsx
-  KpiCards.tsx
-  BottlenecksSection.tsx
-  OpportunitiesTable.tsx
-  RoiForecastChart.tsx
-  ProposalPreview.tsx
-  AiInsightPanel.tsx
-  OutreachSection.tsx
-
-components/views/
-  WebsiteAuditView.tsx
-  ReviewsView.tsx
-  RoiForecastView.tsx
-  ProposalBuilderView.tsx
-
-lib/
-  types.ts
-  industryData.ts
-  mockAnalysis.ts
-  report.ts
-  format.ts
-  websiteAudit.ts
-```
-
----
+- scraping
+- Google Reviews / Maps APIs
+- paid market-data APIs
+- database
+- auth/accounts
+- n8n automation calls
+- MCP/docs connections
+- LLM calls
 
 ## Roadmap
 
-### Phase 1: Smarter Local Intelligence
-
-Make the optional notes field influence:
-
-- detected signals
-- bottleneck severity
-- opportunity ranking
-- ROI estimate
-- proposal recommendations
-- website audit insights
-- review intelligence
-
-### Phase 2: Proposal / Report Export
-
-Add real report export functionality:
-
-- PDF export
-- downloadable client proposal
-- proposal templates
-- branded report layout
-
-### Phase 3: Saved Companies and Reports
-
-Add persistence for:
-
-- saved companies
-- scan history
-- generated reports
-- opportunity status
-- follow-up tracking
-
-### Phase 4: MCP / Docs Knowledge Layer
-
-Connect the app to external knowledge sources such as:
-
-- internal docs
-- business playbooks
-- sales notes
-- proposal templates
-- previous client reports
-
-### Phase 5: n8n Workflow Integration
-
-Connect analysis outputs to automation workflows:
-
-- send follow-up emails
-- create CRM tasks
-- trigger lead enrichment
-- notify the consultant
-- schedule outreach reminders
-
-### Phase 6: Real Public Data Integrations
-
-Potential future integrations:
-
-- website crawling
-- Google Reviews
-- social media analysis
-- competitor research
-- Google Maps leads
-- public business data
-
----
-
-## Positioning
-
-AI Growth Advisor is not a generic chatbot.
-
-It is a business intelligence and proposal-preparation dashboard for AI consultants who want to identify automation opportunities and communicate business value more clearly.
-
----
-
-## Disclaimer
-
-This MVP uses mock and deterministic local logic for demonstration purposes.
-
-It does not currently perform real website crawling, review scraping, live company research, or external AI inference.
-
----
-
-## Author
-
-Built by Jovan Filipovic as part of an AI business and agentic automation portfolio.
+See [docs/ROADMAP.md](docs/ROADMAP.md).

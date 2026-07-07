@@ -98,12 +98,14 @@ export default function CompanyForm({ onAnalyze }: CompanyFormProps) {
 
   return (
     <Panel
-      title="Analyze a company"
-      description="Enter what you know. The agent will generate a full operational audit using demo data tailored to the selected industry."
+      title="Analyze a market context"
+      description="Enter IC Systems context, a target service or market, and notes. The current build generates a local deterministic intelligence report from mock/demo data."
       action={
-        <span className="rounded-full border border-edge bg-surface-raised/50 px-2.5 py-1 text-[11px] font-medium text-slate-400">
-          Demo mode · Local deterministic analysis · No external data used
-        </span>
+        <>
+          <span className="rounded-full border border-edge bg-surface-raised/50 px-2.5 py-1 text-[11px] font-medium text-slate-400">
+            Private mode - Local deterministic analysis - No external data used
+          </span>
+        </>
       }
     >
       <section aria-labelledby="demo-presets-title" className="mt-5">
@@ -116,12 +118,11 @@ export default function CompanyForm({ onAnalyze }: CompanyFormProps) {
               Try a demo scenario
             </h3>
             <p className="mt-1 text-xs text-slate-400">
-              Pick a realistic portfolio example, then run the same analysis
-              flow.
+              Pick a safe local scenario, then run the same analysis flow.
             </p>
           </div>
           <span className="rounded-full border border-blue-500/30 bg-blue-500/10 px-2.5 py-1 text-[11px] font-medium text-blue-300">
-            v1.1 demo presets
+            Local presets
           </span>
         </div>
 
@@ -155,14 +156,14 @@ export default function CompanyForm({ onAnalyze }: CompanyFormProps) {
       >
         <div className="flex flex-col gap-1.5">
           <label htmlFor="companyName" className={LABEL_CLASS}>
-            Company name
+            Business / experiment name
           </label>
           <input
             id="companyName"
             type="text"
             value={companyName}
             onChange={(e) => setCompanyName(e.target.value)}
-            placeholder="e.g. Urban Smile Dental Studio"
+            placeholder="e.g. IC Systems Solar Market Scan"
             aria-invalid={Boolean(error)}
             aria-describedby={error ? COMPANY_NAME_ERROR_ID : undefined}
             className={FIELD_CLASS}
@@ -171,21 +172,21 @@ export default function CompanyForm({ onAnalyze }: CompanyFormProps) {
 
         <div className="flex flex-col gap-1.5">
           <label htmlFor="websiteUrl" className={LABEL_CLASS}>
-            Website URL
+            Website URL or market reference
           </label>
           <input
             id="websiteUrl"
             type="text"
             value={websiteUrl}
             onChange={(e) => setWebsiteUrl(e.target.value)}
-            placeholder="e.g. urbansmile.com"
+            placeholder="e.g. ic-systems.example/solar"
             className={FIELD_CLASS}
           />
         </div>
 
         <div className="flex flex-col gap-1.5">
           <label htmlFor="industry" className={LABEL_CLASS}>
-            Industry
+            Current demo model
           </label>
           <select
             id="industry"
@@ -203,13 +204,13 @@ export default function CompanyForm({ onAnalyze }: CompanyFormProps) {
 
         <div className="flex flex-col gap-1.5 sm:col-span-2">
           <label htmlFor="notes" className={LABEL_CLASS}>
-            Optional notes
+            Business context / notes
           </label>
           <textarea
             id="notes"
             value={notes}
             onChange={(e) => setNotes(e.target.value)}
-            placeholder="Anything specific you already know — e.g. team size, tools they use, complaints you've heard..."
+            placeholder="e.g. IC Systems wants to compare solar panel competitors, offers, lead capture, reviews, and content gaps..."
             rows={3}
             className={FIELD_CLASS}
           />
@@ -230,7 +231,7 @@ export default function CompanyForm({ onAnalyze }: CompanyFormProps) {
             type="submit"
             className={`${PRIMARY_BUTTON} w-full sm:w-auto`}
           >
-            Run Analysis
+            Run Intelligence Analysis
           </button>
         </div>
       </form>

@@ -29,10 +29,10 @@ export default function ReportHeader({ result }: ReportHeaderProps) {
     <div className="flex flex-wrap items-start justify-between gap-4">
       <div>
         <h1 className="text-xl font-bold tracking-tight text-slate-100 sm:text-2xl">
-          Business Intelligence Report
+          Growth Intelligence Report
         </h1>
         <p className="mt-1 text-sm text-slate-400">
-          AI audit and automation roadmap for{" "}
+          Market and growth intelligence summary for{" "}
           <span className="font-medium text-slate-200">{companyName}</span>
           {websiteUrl && <span className="text-slate-500"> · {websiteUrl}</span>}
           <span className="text-slate-500"> · {industryLabel}</span>
