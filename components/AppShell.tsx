@@ -109,15 +109,15 @@ export default function AppShell() {
             <div className="mx-auto mt-6 flex max-w-3xl flex-col gap-6">
               <div>
                 <p className="text-xs font-medium uppercase tracking-widest text-blue-400">
-                  IC Systems Growth Intelligence
+                  Business Intelligence Agent
                 </p>
                 <h1 className="mt-2 text-2xl font-bold tracking-tight text-slate-100 sm:text-3xl">
-                  Run private market and competitor intelligence experiments.
+                  Find hidden AI automation opportunities inside any business.
                 </h1>
                 <p className="mt-2 max-w-2xl text-sm text-slate-400">
-                  Start with business context, a target market such as solar
-                  panels, or a demo scenario to generate a structured local
-                  intelligence report.
+                  Enter a company&rsquo;s details to generate an operational
+                  audit: bottlenecks, automation opportunities, ROI forecast,
+                  and ready-to-send outreach copy.
                 </p>
               </div>
               <CompanyForm onAnalyze={handleAnalyze} />

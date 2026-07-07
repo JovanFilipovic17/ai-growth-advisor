@@ -83,7 +83,7 @@ function Sidebar({ activeView, onNavigate }: SidebarProps) {
           </svg>
         </span>
         <span className="text-sm font-semibold tracking-tight text-slate-100">
-          IC Systems Growth
+          AI Growth Advisor
         </span>
       </div>
 
@@ -141,7 +141,7 @@ function Sidebar({ activeView, onNavigate }: SidebarProps) {
 
       <div className="border-t border-edge px-5 py-4">
         <p className="text-[11px] leading-relaxed text-slate-500">
-          Private IC Systems workspace. Local deterministic analysis only.
+          Demo mode — analysis runs locally on industry benchmark data.
         </p>
       </div>
     </aside>

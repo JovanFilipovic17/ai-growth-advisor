@@ -2,9 +2,9 @@ import type { Metadata, Viewport } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "IC Systems Growth Intelligence",
+  title: "Business Intelligence Agent - AI Growth Advisor",
   description:
-    "Private market and competitor intelligence workspace for IC Systems.",
+    "Find hidden AI automation opportunities inside any business.",
 };
 
 // Explicit (not just Next's default) so mobile Safari never falls back to a

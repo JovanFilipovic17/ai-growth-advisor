@@ -207,7 +207,7 @@ export default function ProposalBuilderView({
             Proposal Builder
           </h1>
           <p className="mt-1 text-sm text-slate-400">
-            Create a management-ready growth intelligence report from the analysis for{" "}
+            Create a client-ready AI growth proposal from the analysis for{" "}
             <span className="font-medium text-slate-200">{companyName}</span>.
           </p>
         </div>
@@ -311,7 +311,7 @@ export default function ProposalBuilderView({
                   className="h-2 w-2 rounded-full bg-blue-500"
                 />
                 <span className="text-[9px] font-semibold uppercase tracking-wide text-slate-500">
-                  IC Systems Growth Intelligence
+                  AI Growth Advisor
                 </span>
               </div>
               <p className="text-base font-bold leading-snug text-slate-900">

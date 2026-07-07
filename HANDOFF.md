@@ -2,75 +2,48 @@
 
 ## Current Status
 
-This repository is now the private applied version of the AI Growth Advisor foundation for **IC Systems Growth Intelligence**.
+The app is a stable, Vercel-ready Next.js/Tailwind MVP for **AI Growth Advisor**: a premium dark B2B SaaS dashboard that helps AI freelancers/consultants turn company details into a deterministic business audit, automation opportunities, ROI estimates, outreach copy, and a client-ready proposal PDF.
 
-The app is a Vercel-ready Next.js/Tailwind dashboard for safe real-business experimentation around market and competitor intelligence. It currently remains local/demo-first: no real APIs, no database, no auth, no scraping, no n8n, no MCP, and no LLM calls.
+`npm run build` is expected to pass. The app has no env vars, no backend, no auth, no database, no payments, no scraping, no LLM calls, and no external data integrations.
 
-First private target use case: **solar panel competitor intelligence**.
-
-## Implemented Foundation
+## Implemented
 
 - **Multi-view dashboard** (`components/AppShell.tsx`) with sidebar/mobile navigation across Overview, Website Audit, Reviews, ROI Forecast, and Proposal Builder.
-- **Company/context input + demo scenarios** (`components/CompanyForm.tsx`) with local form state and preset examples inherited from the public AI Growth Advisor version.
-- **Notes-based deterministic signal engine** (`lib/signals.ts`) that keyword-matches notes and re-ranks analysis output without any LLM/API call.
-- **Mock/local analysis generation** (`lib/mockAnalysis.ts`, `lib/industryData.ts`, `lib/report.ts`) using deterministic benchmark data.
+- **Company input + demo scenarios** (`components/CompanyForm.tsx`) with local form state and preset examples for the five target industries.
+- **Notes-based deterministic signal engine** (`lib/signals.ts`) that keyword-matches owner notes and re-ranks analysis output without any LLM/API call.
+- **Mock/local analysis generation** (`lib/mockAnalysis.ts`, `lib/industryData.ts`, `lib/report.ts`) using deterministic industry benchmark data.
 - **Demo Website Audit** (`components/views/WebsiteAuditView.tsx`, `lib/websiteAudit.ts`) using mock conversion/trust/funnel data. No live crawling.
 - **Demo Reviews intelligence** (`components/views/ReviewsView.tsx`, `lib/reviewIntelligence.ts`) using mock ratings, themes, sentiment, response rows, and review samples. No Google Reviews API.
 - **ROI Forecast** (`components/views/RoiForecastView.tsx`) with deterministic calculations and charts.
 - **Proposal Builder** (`components/views/ProposalBuilderView.tsx`) with configurable PDF settings and a cosmetic preview pane.
-- **Client-side PDF export** (`lib/proposalPdf.ts`) using dynamically imported `jspdf` + `jspdf-autotable`.
+- **Client-side Proposal PDF export** (`lib/proposalPdf.ts`) using dynamically imported `jspdf` + `jspdf-autotable`. Live buttons exist in `ReportHeader.tsx` and `ProposalBuilderView.tsx`.
 - **Mobile Safari hotfixes**: 16px mobile form controls, `min-w-0` fixes around tables/rails, viewport export, horizontal overflow protection, and mobile-safe view tabs.
-- **Private docs/env setup**: `.env.example` and `docs/ROADMAP.md`.
-- **IC Systems company profile/config** (`lib/companyProfiles.ts`, `docs/IC_SYSTEMS_PROFILE.md`) with verified facts, assumptions, validation questions, and solar competitor seed list.
-- **IC Solar pilot roadmap** (`docs/IC_SOLAR_PILOT_ROADMAP.md`) for the first private solar competitor intelligence workflow.
+- **Demo transparency label** near the form: "Demo mode · Local deterministic analysis · No external data used".
 
-## Private Project Status
+## Working Flow
 
-- This repo is a private applied lab based on the AI Growth Advisor foundation.
-- IC Systems / IC Solar is the first real pilot.
-- The architecture should remain reusable for any company, not only IC Systems.
-- IC Systems-specific data must live in profiles, config, and docs (`lib/companyProfiles.ts`, `docs/`), not hardcoded throughout the core engine.
-- Real API integrations are future tasks.
+1. User enters company details or selects a demo scenario.
+2. `generateAnalysis()` builds one local `AnalysisResult`.
+3. All views render from the same result object; switching views does not reset the analysis.
+4. Proposal PDF export reads the same `AnalysisResult` plus Proposal Builder settings and downloads a browser-generated PDF.
 
-## Private Project Purpose
+## Target Industries
 
-Use the AI Growth Advisor foundation to run real market and competitor intelligence experiments for IC Systems while keeping the public portfolio version separate.
-
-Future target workflow:
-
-1. Enter IC Systems business context.
-2. Enter target service/market, e.g. solar panels.
-3. Find or input around 10 competitors.
-4. Analyze competitor websites, offers, lead capture, reviews, and content.
-5. Identify market gaps and opportunities.
-6. Generate a management-ready report.
-7. Later connect real APIs, MCP/docs, and n8n workflows.
-
-## Current Data Mode
-
-Everything is still local/mock/manual input by design.
-
-- Website Audit and Reviews are mock/demo intelligence, not real public-data integrations.
-- Competitor intelligence is currently a profile/config/docs pilot, not a real data-ingestion workflow.
-- Proposal/report PDF export is implemented client-side and should not be listed as future.
-- `.env.local` is gitignored via `.env*.local`; keep secrets out of git.
+1. Dental clinics
+2. Restaurants / catering companies
+3. Gyms / fitness studios
+4. Balkan IPTV / OTT providers
+5. Small e-commerce stores
 
 ## Important Constraints
 
-Do not add these unless explicitly requested:
+Keep the MVP local/demo-first unless explicitly asked otherwise:
 
-- Real API calls
-- Scraping/crawling
-- Database or persistence
-- Auth/accounts
-- Payments
-- CRM export
-- Email sending
-- n8n workflow calls
-- MCP/docs connection
-- LLM calls
-
-Keep changes small and scoped. Prefer existing components/styles: `Panel`, `cardStyles`, `ScoreRing`, `PreviewSkeleton`, `buttonStyles`, and Tailwind tokens in `tailwind.config.ts`.
+- Do not add scraping, Google Reviews API, Google Maps API, auth, database, payments, accounts, CRM export, email sending, or LLM calls by default.
+- Website Audit and Reviews are currently mock/demo intelligence, not real public-data integrations.
+- Proposal PDF export is implemented client-side; do not list it as a future feature.
+- Preserve the serious B2B dashboard feel. Avoid turning the app into a generic AI generator or toy chatbot.
+- Keep changes small and scoped. Prefer existing components/styles: `Panel`, `cardStyles`, `ScoreRing`, `PreviewSkeleton`, `buttonStyles`, and Tailwind tokens in `tailwind.config.ts`.
 
 ## Placeholder / Roadmap UI
 
@@ -88,10 +61,9 @@ Still intentionally disabled or cosmetic:
 ## Future Phases
 
 1. **Saved companies/reports**: local persistence first, then database later if needed.
-2. **Solar competitor intelligence workflow**: IC Systems context, target service/market, competitor list, gap analysis, management report.
-3. **MCP/docs knowledge layer**: enrich recommendations with curated internal/product/market knowledge.
-4. **n8n workflow integration**: generate or export automation workflow blueprints.
-5. **Real public data integrations later**: competitor website crawling, Google Reviews/Maps, search/social/content scans.
+2. **MCP/docs knowledge layer**: enrich recommendations with curated implementation knowledge.
+3. **n8n workflow integration**: generate or export automation workflow blueprints.
+4. **Real public data integrations later**: Google Reviews, website crawling, competitor/social scans. These should replace or augment current mock Website Audit/Reviews data only when explicitly requested.
 
 ## Development Notes
 
